@@ -29,6 +29,8 @@
 
         public bool EnableMirror { get; set; }
 
+        public decimal WordLengthPercentageGrowth { get; set; }
+
         public bool EnableUnderscores { get; set; }
 
         public bool HasInputFiles
@@ -83,41 +85,51 @@
             instance.EnableBrackets = false;
             instance.EnableMirror = false;
             instance.EnableUnderscores = false;
+            instance.WordLengthPercentageGrowth = 0;
 
             foreach (var arg in args)
             {
                 if (arg.StartsWith("/", StringComparison.Ordinal) || arg.StartsWith("-", StringComparison.Ordinal))
                 {
-                    switch (arg.Substring(1).ToUpperInvariant())
+                    int percentageAsInt = 0;
+
+                    if(arg.Substring(1).ToUpperInvariant() == "L")
                     {
-                        case "L":
-                            instance.EnableExtraLength = true;
-                            instance.UseDefaultOptions = false;
-                            break;
-
-                        case "A":
-                            instance.EnableAccents = true;
-                            instance.UseDefaultOptions = false;
-                            break;
-
-                        case "B":
-                            instance.EnableBrackets = true;
-                            instance.UseDefaultOptions = false;
-                            break;
-
-                        case "M":
-                            instance.EnableMirror = true;
-                            instance.UseDefaultOptions = false;
-                            break;
-
-                        case "U":
-                            instance.EnableUnderscores = true;
-                            instance.UseDefaultOptions = false;
-                            break;
-
-                        default:
-                            Console.WriteLine("ERROR: Unknown option \"{0}\".", arg);
-                            return false;
+                        instance.EnableExtraLength = true;
+                        instance.UseDefaultOptions = false;
+                    }
+                    else if (arg.Substring(1).ToUpperInvariant() == "A")
+                    {
+                        instance.EnableAccents = true;
+                        instance.UseDefaultOptions = false;
+                    }
+                    else if (arg.Substring(1).ToUpperInvariant() == "B")
+                    {
+                        instance.EnableBrackets = true;
+                        instance.UseDefaultOptions = false;
+                    }
+                    else if (arg.Substring(1).ToUpperInvariant() == "M")
+                    {
+                        instance.EnableMirror = true;
+                        instance.UseDefaultOptions = false;
+                    }
+                    else if (arg.Substring(1).ToUpperInvariant() == "U")
+                    {
+                        instance.EnableUnderscores = true;
+                        instance.UseDefaultOptions = false;
+                    }
+                    //Check if the argument is an integer (desired length percentage value)
+                    else if (int.TryParse(arg.Substring(1), out percentageAsInt) && percentageAsInt > 0)
+                    {
+                        instance.EnableExtraLength = true;
+                        instance.UseDefaultOptions = false;
+                        instance.WordLengthPercentageGrowth = percentageAsInt;
+                        Console.WriteLine(instance.WordLengthPercentageGrowth);
+                    }
+                    else
+                    {
+                        Console.WriteLine("ERROR: Unknown option \"{0}\".", arg);
+                        return false;
                     }
                 }
                 else
@@ -149,7 +161,7 @@
                     var processor = new ResxProcessor();
                     if (EnableExtraLength || UseDefaultOptions)
                     {
-                        processor.TransformString += (s, e) => { e.Value = ExtraLength.Transform(e.Value); };
+                        processor.TransformString += (s, e) => { e.Value = ExtraLength.Transform(e.Value, WordLengthPercentageGrowth); };
                     }
 
                     if (EnableAccents || UseDefaultOptions)

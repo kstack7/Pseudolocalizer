@@ -12,15 +12,15 @@
         [Test]
         public void TestExtraLength()
         {
-            Assert.That(ExtraLength.Transform(string.Empty), Is.EqualTo(string.Empty), "No extra length added to the empty string.");
+            Assert.That(ExtraLength.Transform(string.Empty, 30), Is.EqualTo(string.Empty), "No extra length added to the empty string.");
 
             var singleWord = "hello";
-            var transformed = ExtraLength.Transform(singleWord);
+            var transformed = ExtraLength.Transform(singleWord, 30);
             Assert.That(transformed.Length, Is.GreaterThan(singleWord.Length));
             Assert.That(transformed.Split(' ').Length, Is.EqualTo(singleWord.Split(' ').Length), "The number of words stays the same.");
 
             var sentence = "The quick brown fox bla bla bla.";
-            transformed = ExtraLength.Transform(sentence);
+            transformed = ExtraLength.Transform(sentence, 30);
             Assert.That(transformed.Length, Is.GreaterThan(sentence.Length));
             Assert.That(transformed.Split(' ').Length, Is.EqualTo(sentence.Split(' ').Length), "The number of words stays the same.");
         }

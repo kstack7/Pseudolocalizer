@@ -11,7 +11,7 @@
         // character mappings gratefully borrowed from the Google pseudolocalization-tool.
         private static readonly Dictionary<char, char> Replacements = new Dictionary<char, char>()
         {
-            { ' ', '\u2003' },
+            //{ ' ', '\u2003' }, don't care to increase spacing for FIGS
             { '!', '\u00a1' },
             { '"', '\u2033' },
             { '#', '\u266f' },
